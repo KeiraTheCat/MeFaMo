@@ -16,6 +16,28 @@ class Drawing():
             print(e)
             return image
 
+    def draw_landmark_point_small(landmark, image, color = (255, 255, 255), radius = 1):
+        try:
+            image_rows, image_cols, _ = image.shape
+            keypoint_px = drawing_utils._normalized_to_pixel_coordinates(landmark.x, landmark.y,
+                                    image_cols, image_rows)
+            center_coordinates = (int(keypoint_px[0]), int(keypoint_px[1]))
+            return cv2.circle(image, center_coordinates, radius, color, 3)
+        except Exception as e:
+            print(e)
+            return image
+
+    def draw_text(landmark, image, color = (255, 255, 255), fontsize = 1, intext = "EMPTY TEXT"):
+        try:
+            image_rows, image_cols, _ = image.shape
+            keypoint_px = drawing_utils._normalized_to_pixel_coordinates(landmark.x, landmark.y,
+                                    image_cols, image_rows)
+            center_coordinates = (int(keypoint_px[0]), int(keypoint_px[1]))
+            return cv2.putText(image,intext,center_coordinates,cv2.FONT_HERSHEY_DUPLEX,fontsize,color)
+        except Exception as e:
+            print(e)
+            return image
+
     def draw_3d_face(landmarks, image):
         # create pointcloid with open3d
         frame_width, frame_height, channels = image.shape

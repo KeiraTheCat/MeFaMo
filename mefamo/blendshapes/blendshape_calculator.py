@@ -364,3 +364,24 @@ class BlendshapeCalculator():
             FaceBlendShape.NoseSneerLeft, self._live_link_face.get_blendshape(FaceBlendShape.CheekSquintLeft))
         self._live_link_face.set_blendshape(
             FaceBlendShape.NoseSneerRight, self._live_link_face.get_blendshape(FaceBlendShape.CheekSquintRight))
+
+        # calculate eye positions
+        LL = self.blend_shape_config.CanonicalPpoints.eye_left[0] #left eye left most
+        LR = self.blend_shape_config.CanonicalPpoints.eye_left[1] #left eye right most
+        RL = self.blend_shape_config.CanonicalPpoints.eye_right[1] #right eye left most
+        RR = self.blend_shape_config.CanonicalPpoints.eye_right[0] #right eye right most
+        
+        #iris position function
+        def iris_position(iris_center, right_point, left_point):
+            center_to_right_dist = math.dist(iris_center,right_point)
+            #center_to_left_dist = math.dist(iris_center,left_point)
+            total_distance = math.dist(right_point, left_point)
+            ratio = center_to_right_dist/total_distance
+            return ratio
+        def saturate(n): return max(0, min(n, 1))
+        ratioLeft = iris_position(self._get_landmark(473,True),self._get_landmark(LL,True),self._get_landmark(LR,True))
+        ratioRight = iris_position(self._get_landmark(468,True),self._get_landmark(RL,True),self._get_landmark(RR,True))
+        self._live_link_face.set_blendshape(FaceBlendShape.EyeLookInLeft,((saturate((ratioLeft-.5)*10))+(saturate((ratioRight-.5)*10))/2))
+        self._live_link_face.set_blendshape(FaceBlendShape.EyeLookOutLeft,((saturate((.5-ratioLeft)*10))+(saturate((.5-ratioRight)*10)))/2)
+        self._live_link_face.set_blendshape(FaceBlendShape.EyeLookOutRight,((saturate((ratioRight-.5)*10))+(saturate((ratioLeft-.5)*10)))/2)
+        self._live_link_face.set_blendshape(FaceBlendShape.EyeLookInRight,((saturate((.5-ratioRight)*10))+(saturate((.5-ratioLeft)*10)))/2)

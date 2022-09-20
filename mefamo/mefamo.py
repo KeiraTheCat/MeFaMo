@@ -178,6 +178,7 @@ class Mefamo():
         # Draw the face mesh annotations on the image.
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        # image = cv2.rectangle(image,(0,0),(1000,1000),(0,0,0),-1)
         face_image_3d = None
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
@@ -207,11 +208,22 @@ class Mefamo():
             
                  # draw iris points
                 image = Drawing.draw_landmark_point(face_landmarks.landmark[468], image, color = (0, 0, 255))
+                image = Drawing.draw_text(face_landmarks.landmark[468], image, color = (255, 255, 255),fontsize=.35,intext = "468")
                 image = Drawing.draw_landmark_point(face_landmarks.landmark[473], image, color = (0, 255, 0))
+                image = Drawing.draw_text(face_landmarks.landmark[473], image, color = (255, 255, 255),fontsize=.35,intext = "473")
+
+                # draw iris estimation points
+                image = Drawing.draw_landmark_point_small(face_landmarks.landmark[33], image, color = (255, 255, 255))
+                image = Drawing.draw_text(face_landmarks.landmark[33], image, color = (255, 255, 255),fontsize=.35,intext = "33")
+                image = Drawing.draw_landmark_point_small(face_landmarks.landmark[133], image, color = (255, 255, 255))
+                image = Drawing.draw_text(face_landmarks.landmark[133], image, color = (255, 255, 255),fontsize=.35,intext = "133")
+                image = Drawing.draw_landmark_point_small(face_landmarks.landmark[362], image, color = (255, 255, 255))
+                image = Drawing.draw_text(face_landmarks.landmark[362], image, color = (255, 255, 255),fontsize=.35,intext = "362")
+                image = Drawing.draw_landmark_point_small(face_landmarks.landmark[263], image, color = (255, 255, 255))
+                image = Drawing.draw_text(face_landmarks.landmark[263], image, color = (255, 255, 255),fontsize=.35,intext = "263")
 
                 # calculate and set all the blendshapes                
-                self.blendshape_calulator.calculate_blendshapes(
-                    self.live_link_face, metric_landmarks[0:3].T, face_landmarks.landmark)
+                self.blendshape_calulator.calculate_blendshapes(self.live_link_face, metric_landmarks[0:3].T, face_landmarks.landmark)
 
                 # calculate the head rotation out of the pose matrix
                 eulerAngles = transforms3d.euler.mat2euler(pose_transform_mat)
@@ -232,7 +244,7 @@ class Mefamo():
         text_coordinates = [25, 25]
         font = cv2.FONT_HERSHEY_SIMPLEX
         font_scale = 0.50
-        color = (0, 255, 0)
+        color = (255, 255, 255)
 
         if self.show_image:
             cv2.imshow('MediaPipe Face Mesh', image.astype('uint8'))  
