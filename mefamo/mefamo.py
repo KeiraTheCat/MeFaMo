@@ -69,12 +69,13 @@ def calculate_rotation(face_landmarks, pcf: PCF, image_shape):
 
    
 class Mefamo():
-    def __init__(self, input = 0, ip = '127.0.0.1', port = 11111, show_3d = False, hide_image = False, show_debug = False) -> None:
+    def __init__(self, input = 0, ip = '127.0.0.1', port = 11111, show_3d = False, hide_image = False, show_debug = False, hide_camera = False) -> None:
 
         self.input = input
         self.show_image = not hide_image
         self.show_3d = show_3d
         self.show_debug = show_debug
+        self.hide_camera = hide_camera
 
         self.face_mesh = face_mesh.FaceMesh(
             max_num_faces=1,
@@ -178,7 +179,8 @@ class Mefamo():
         # Draw the face mesh annotations on the image.
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        # image = cv2.rectangle(image,(0,0),(1000,1000),(0,0,0),-1)
+        if self.hide_camera:
+            image = cv2.rectangle(image,(0,0),(1000,1000),(0,0,0),-1)
         face_image_3d = None
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
